@@ -37,6 +37,25 @@ COPY ./srcs/default /etc/nginx/sites-available/
 #https://www.rosehosting.com/blog/how-to-install-wordpress-with-nginx-on-debian-10/
 COPY ./srcs/php.ini /etc/php/7.3/fpm/
 
+#create user
+RUN service mysql restart \
+	&& mysql -e "CREATE DATABASE wpdb;" \
+	&& mysql -e "CREATE USER 'wpuser'@'localhost' identified by 'dbpassword';" \
+	&& mysql -e "GRANT ALL PRIVILEGES ON  wpdb. * TO 'wpuser'@'localhost';" \
+	&& mysql -e "EXIT"
+
+RUN cd /var/www/html \
+	&& wget https://wordpress.org/latest.tar.gz \
+	&& tar -xvzf latest.tar.gz
+
+COPY ./srcs/wp-config.php /var/www/html/wordpress/
+
+RUN chown -R www-data:www-data /var/www/html/wordpress
+
+COPY ./srcs/wordpress.conf /etc/nginx/sites-available/
+
+RUN ln -s /etc/nginx/sites-available.wordpress.conf /etc/nginx/sites-enabled/
+
 RUN mkdir /run/php/
 
 CMD service nginx restart \
