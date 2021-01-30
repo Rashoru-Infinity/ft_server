@@ -58,7 +58,4 @@ RUN ln -s /etc/nginx/sites-available.wordpress.conf /etc/nginx/sites-enabled/
 
 RUN mkdir /run/php/
 
-CMD service nginx restart \
-&& service php7.3-fpm restart \
-&& service mysql restart \
-&& tail -f /dev/null
+CMD service nginx restart && service php7.3-fpm restart && service mysql restart && tail -f /dev/null
