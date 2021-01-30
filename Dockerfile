@@ -42,6 +42,7 @@ RUN service mysql restart \
 	&& mysql -e "CREATE DATABASE wpdb;" \
 	&& mysql -e "CREATE USER 'wpuser'@'localhost' identified by 'dbpassword';" \
 	&& mysql -e "GRANT ALL PRIVILEGES ON  wpdb. * TO 'wpuser'@'localhost';" \
+	&& mysql -e "FLUSH PRIVILEGES;" \
 	&& mysql -e "EXIT"
 
 RUN cd /var/www/html \
@@ -56,7 +57,13 @@ COPY ./srcs/wordpress.conf /etc/nginx/sites-available/wordpress.conf
 
 RUN ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
 
+#create necessary directory
 RUN mkdir /run/php/
+
+RUN cd /var/www/html \
+	&& wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.tar.gz \
+	&& tar -xvzf phpMyAdmin-5.0.4-all-languages.tar.gz \
+	&& mv phpMyAdmin-5.0.4-all-languages phpmyadmin
 
 CMD service nginx start \
 	&& service php7.3-fpm start \
