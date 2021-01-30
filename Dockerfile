@@ -52,10 +52,13 @@ COPY ./srcs/wp-config.php /var/www/html/wordpress/
 
 RUN chown -R www-data:www-data /var/www/html/wordpress
 
-COPY ./srcs/wordpress.conf /etc/nginx/sites-available/
+COPY ./srcs/wordpress.conf /etc/nginx/sites-available/wordpress.conf
 
-RUN ln -s /etc/nginx/sites-available.wordpress.conf /etc/nginx/sites-enabled/
+RUN ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
 
 RUN mkdir /run/php/
 
-CMD service nginx restart && service php7.3-fpm restart && service mysql restart && tail -f /dev/null
+CMD service nginx start \
+	&& service php7.3-fpm start \
+	&& service mysql start \
+	&& tail -f /dev/null
