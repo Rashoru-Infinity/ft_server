@@ -1,4 +1,6 @@
 FROM debian:buster
+#install
+#https://www.rosehosting.com/blog/how-to-install-wordpress-with-nginx-on-debian-10/
 RUN apt update && apt -y upgrade; \
 	apt install -y nginx \
 	mariadb-server \
@@ -21,11 +23,23 @@ RUN apt update && apt -y upgrade; \
 	vim \
 	openssl
 
+#Self-signed certificate
+#https://kitsune.blog/nginx-ssl
 RUN	mkdir /etc/nginx/ssl \
 && openssl genrsa -out /etc/nginx/ssl/server.key 2048 \
 && openssl req -new -key /etc/nginx/ssl/server.key -out /etc/nginx/ssl/server.csr -subj "/CN=localhost" \
 && openssl x509 -days 3650 -req -signkey /etc/nginx/ssl/server.key -in /etc/nginx/ssl/server.csr -out /etc/nginx/ssl/server.crt
 
+#default
+#https://forhjy.medium.com/how-to-install-lemp-wordpress-on-debian-buster-by-using-dockerfile-1-75ddf3ede861
 COPY ./srcs/default /etc/nginx/sites-available/
+#php.ini
+#https://www.rosehosting.com/blog/how-to-install-wordpress-with-nginx-on-debian-10/
+COPY ./srcs/php.ini /etc/php/7.3/fpm/
 
-CMD service nginx stop && service nginx start && tail -f /dev/null
+RUN mkdir /run/php/
+
+CMD service nginx restart \
+&& service php7.3-fpm restart \
+&& service mysql start \
+&& tail -f /dev/null
