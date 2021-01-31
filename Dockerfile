@@ -34,7 +34,7 @@ RUN	mkdir /etc/nginx/ssl \
 #default
 #https://forhjy.medium.com/how-to-install-lemp-wordpress-on-debian-buster-by-using-dockerfile-1-75ddf3ede861
 COPY ./srcs/default.template /etc/nginx/sites-available/default.template
-#for setting environment variable
+#set an environment variable
 COPY ./srcs/auto_index.sh /etc/nginx/sites-available/
 #php.ini
 #https://www.rosehosting.com/blog/how-to-install-wordpress-with-nginx-on-debian-10/
@@ -60,10 +60,10 @@ COPY ./srcs/wordpress.conf /etc/nginx/sites-available/wordpress.conf
 
 RUN ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
 
-#create necessary directory
+#create a necessary directory
 RUN mkdir /run/php/
 
-#phpMyAdmin Settings
+#phpMyAdmin
 #https://note.com/syamashi/n/nd296e3e46dab
 RUN cd /var/www/html \
 	&& wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.tar.gz \
