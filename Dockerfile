@@ -60,6 +60,8 @@ RUN ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
 #create necessary directory
 RUN mkdir /run/php/
 
+#phpMyAdmin Settings
+#https://note.com/syamashi/n/nd296e3e46dab
 RUN cd /var/www/html \
 	&& wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.tar.gz \
 	&& tar -xvzf phpMyAdmin-5.0.4-all-languages.tar.gz \
