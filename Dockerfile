@@ -21,7 +21,8 @@ RUN apt update && apt -y upgrade; \
 	wget \
 	git \
 	vim \
-	openssl
+	openssl \
+	gettext
 
 #Self-signed certificate
 #https://kitsune.blog/nginx-ssl
@@ -32,7 +33,9 @@ RUN	mkdir /etc/nginx/ssl \
 
 #default
 #https://forhjy.medium.com/how-to-install-lemp-wordpress-on-debian-buster-by-using-dockerfile-1-75ddf3ede861
-COPY ./srcs/default /etc/nginx/sites-available/
+COPY ./srcs/default.template /etc/nginx/sites-available/default.template
+#for setting environment variable
+COPY ./srcs/auto_index.sh /etc/nginx/sites-available/
 #php.ini
 #https://www.rosehosting.com/blog/how-to-install-wordpress-with-nginx-on-debian-10/
 COPY ./srcs/php.ini /etc/php/7.3/fpm/
@@ -67,7 +70,8 @@ RUN cd /var/www/html \
 	&& tar -xvzf phpMyAdmin-5.0.4-all-languages.tar.gz \
 	&& mv phpMyAdmin-5.0.4-all-languages phpmyadmin
 
-CMD service nginx start \
+CMD bash /etc/nginx/sites-available/auto_index.sh \
+	&& service nginx start \
 	&& service php7.3-fpm start \
 	&& service mysql start \
 	&& tail -f /dev/null
